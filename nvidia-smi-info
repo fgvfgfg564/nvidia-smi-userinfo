@@ -1,0 +1,22 @@
+#!/usr/bin/python3
+import os
+
+result = os.popen("nvidia-smi").read()
+
+print(result)
+pos = result.find("PID")
+result = result[pos:]
+result = result.split('\n')
+result = result[3:-2]
+for line in result:
+    cnt = 0
+    gpu = 0
+    for item in line.split(' '):
+        if item != '':
+            cnt += 1
+            if cnt == 2:
+                gpu = item
+            if cnt == 5:
+                user = os.popen(f"ps -up {item} | cut -d' ' -f1").readlines()[1]
+                print(f"GPU: {gpu}\t\tPID: {item}\t\tUSER: {user}", end="")
+                break
